@@ -1,6 +1,10 @@
-webserver
-    actix
-    typing
-.env
-database
-    typing
+DONE: 
+
+Routing
+implemented tutorial: https://github.com/actix/examples/tree/master/databases/postgres
+
+TODO:
+
+create_link.sql -> Syntax error at VALUES somewhere but im too dumb to find the reasoning... 
+
+move client into routes

@@ -1,6 +1,6 @@
 use actix_web::{web::{self}, HttpResponse};
 
-use crate::link;
+use crate::{ routes};
 
 pub fn config_app(cfg: &mut web::ServiceConfig) {
 
@@ -13,18 +13,18 @@ pub fn config_app(cfg: &mut web::ServiceConfig) {
 
     .service(
         web::resource("/createLink")
-            .route(web::get().to(link::routes::create_link))
+            .route(web::post().to(routes::create_link))
     )
 
 
     .service(
         web::resource("/getAll")
-            .route(web::get().to(link::routes::get_all))   
+            .route(web::get().to(routes::get_all))   
     )
 
 
     .service(
         web::resource("/{somelink}")
-            .route(web::get().to(link::routes::get_link))
+            .route(web::get().to(routes::get_link))
     );
 }
