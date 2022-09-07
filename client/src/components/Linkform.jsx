@@ -27,7 +27,7 @@ function Linkform() {
             <input
               type="text"
               placeholder="short link"
-              className="input input-bordered"
+              className="input input-bordered w-full"
             />
           </label>
         </div>
