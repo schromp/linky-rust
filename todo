@@ -1,0 +1,15 @@
+implemented tutorial: https://github.com/actix/examples/tree/master/databases/postgres
+
+TODO:
+
+get_all -> adjusting
+get_link -> implement
+check if longlink is a valid link
+better error message if shortlink already exists
+auto delete after 30 days, check every 24 hours -> Low priority
+
+move client into routes
+add functionality to ui -> methods
+check input and give feedback
+
+update docker compose to support everything
