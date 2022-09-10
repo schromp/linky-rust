@@ -22,7 +22,10 @@ async fn main() -> std::io::Result<()> {
 
     let config: MyConfig = config_.try_deserialize().unwrap();
 
-    let pool = config.pg.create_pool(None, NoTls).unwrap();
+    let pool = db::init_db(config);
+
+
+    //Init tne db
 
     let server = HttpServer::new(move || {
         App::new()

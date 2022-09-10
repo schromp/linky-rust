@@ -2,8 +2,16 @@ use actix_web::{HttpResponse, Error, web};
 use deadpool_postgres::{Pool, Client};
 use crate::{db, errors::MyError, link::Link};
 
-pub async fn get_link(_somelink: web::Path<String>) -> Result<HttpResponse, Error> {
-    Ok(HttpResponse::Ok().body("this is a link"))
+//TNOT TESTED!
+pub async fn get_link(toget: web::Path<String>,  db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+
+    let sl = toget.into_inner();
+
+    let client: Client = db_pool.get().await.map_err(MyError::PoolError)?;
+    let linkk = db::get_link(&client, &sl).await?;
+
+    Ok(HttpResponse::Ok().json(linkk.shortlink))
+
 }
 
 pub async fn create_link(json: web::Json<Link>, db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
