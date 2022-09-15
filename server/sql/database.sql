@@ -1,3 +1,5 @@
+--psql -U actix -p 5430 -f sql/database.sql actix
+
 DROP SCHEMA IF EXISTS linky CASCADE;
 CREATE SCHEMA linky;
 

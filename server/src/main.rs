@@ -24,6 +24,8 @@ async fn main() -> std::io::Result<()> {
 
     let pool = config.pg.create_pool(None, NoTls).unwrap();
 
+    //TODO create database script runner
+
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
