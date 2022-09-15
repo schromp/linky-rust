@@ -2,8 +2,6 @@ implemented tutorial: https://github.com/actix/examples/tree/master/databases/po
 
 TODO:
 
-check if longlink is a valid link
-better error message if shortlink already exists
 auto delete after 30 days, check every 24 hours -> Low priority
 
 move client into routes

@@ -22,12 +22,18 @@ async fn main() -> std::io::Result<()> {
 
     let config: MyConfig = config_.try_deserialize().unwrap();
 
-    let pool = db::init_db(config);
+    let pool = config.pg.create_pool(None, NoTls).unwrap();
 
 
     //Init tne db
 
-    //TODO create database script runner
+    if !std::env::var("NO_NEW_SETUP").is_ok() {
+        let client = pool.get().await.unwrap();
+        let stmt = include_str!("../sql/init_db.sql");
+        client.batch_execute(&stmt).await.unwrap();
+    }
+
+
 
     let server = HttpServer::new(move || {
         App::new()

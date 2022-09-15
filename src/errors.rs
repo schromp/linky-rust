@@ -7,6 +7,8 @@ use tokio_postgres::error::Error as PGError;
 #[derive(Display, From, Debug)]
 pub enum MyError {
     NotFound,
+    InvalidLinkError,
+    AlreadyExistsError,
     PGError(PGError),
     PGMError(PGMError),
     PoolError(PoolError),
@@ -18,10 +20,12 @@ impl ResponseError for MyError {
     fn error_response(&self) -> HttpResponse {
         match *self {
             MyError::NotFound => HttpResponse::NotFound().finish(),
+            MyError::InvalidLinkError => HttpResponse::BadRequest().finish(),
+            MyError::AlreadyExistsError => HttpResponse::SeeOther().finish(),
             MyError::PoolError(ref err) => {
                 HttpResponse::InternalServerError().body(err.to_string())
-            },
-            _ => HttpResponse::InternalServerError().finish(), //implementation missing?
+            }
+            _ => HttpResponse::InternalServerError().finish(),
         }
     }
 }

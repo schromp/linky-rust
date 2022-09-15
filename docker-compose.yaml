@@ -8,3 +8,15 @@ services:
       - POSTGRES_DB=actix
     ports:
       - 5430:5432
+  server:
+    build: linky-rust
+    ports:
+      - 8080:8080
+    environment:
+      - SERVER_ADDR=127.0.0.1:8080
+      - PG.USER=actix
+      - PG.PASSWORD=actix
+      - PG.HOST=127.0.0.1
+      - PG.PORT=5430
+      - PG.DBNAME=actix
+      - PG.POOL.MAX_SIZE=16
