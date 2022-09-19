@@ -7,7 +7,7 @@ use url::Url;
 /// fetches the link from the database
 /// redirects to the longlink
 ///
-/// TODO check if link available in database and return error page if not
+/// TODO return error page instead of not found
 ///
 pub async fn get_link(
     somelink: web::Path<String>,
@@ -15,19 +15,28 @@ pub async fn get_link(
 ) -> Result<HttpResponse, Error> {
     let client = db_pool.get().await.map_err(MyError::PoolError)?;
 
-    let lookup = db::get_link(&client, &somelink).await?;
+    let lookup = db::get_link(&client, &somelink).await;
 
-    Ok(HttpResponse::TemporaryRedirect()
-        .status(http::StatusCode::TEMPORARY_REDIRECT)
-        .insert_header(("location", lookup.longlink))
-        .finish())
+    //change ? to match and return a not found code/website
+    let ret = match lookup {
+        Ok(l) => {
+            Ok(HttpResponse::TemporaryRedirect()
+            .status(http::StatusCode::TEMPORARY_REDIRECT)
+            .insert_header(("location", l.longlink))
+            .finish())
+        },
+        Err(_) => Ok(HttpResponse::NotFound().finish())
+    };
+    ret
 }
 
 pub async fn create_link(
     json: web::Json<Link>,
     db_pool: web::Data<Pool>,
 ) -> Result<HttpResponse, Error> {
+    println!("{:?}", &json);
     let link_info: Link = json.into_inner();
+
 
     //only very basic handling. still accepts domains just not completely faulty ones
     let _url = Url::parse(&link_info.longlink).map_err(|_| return MyError::InvalidLinkError)?;

@@ -5,6 +5,7 @@ mod routes;
 mod errors;
 mod db;
 
+
 use crate::config_app::config_app;
 
 use actix_web::{HttpServer, App, web};
@@ -12,6 +13,7 @@ use config_db::MyConfig;
 use dotenv::dotenv;
 use ::config::Config;
 use tokio_postgres::NoTls;
+use actix_cors::Cors;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -33,10 +35,12 @@ async fn main() -> std::io::Result<()> {
         client.batch_execute(&stmt).await.unwrap();
     }
 
-
-
     let server = HttpServer::new(move || {
+
+        let cors = Cors::permissive();
+
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(pool.clone()))
             .configure(config_app)
     })

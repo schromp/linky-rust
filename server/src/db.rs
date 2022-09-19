@@ -4,6 +4,7 @@ use tokio_pg_mapper::FromTokioPostgresRow;
 use crate::{errors::MyError, link::Link};
 
 
+//TODO create randomized shortlink in case there is no specified
 pub async fn create_link(client: &Client, link_info: Link) -> Result<Link, MyError> {
     let _stmt = include_str!("../sql/create_link.sql");
     let _stmt = _stmt.replace("$table_fields", &Link::sql_table_fields());
