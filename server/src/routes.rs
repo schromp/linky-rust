@@ -30,6 +30,8 @@ pub async fn get_link(
     ret
 }
 
+//TODO handle shortlink having wrong characters
+//TODO handle link too long or shortling too long
 pub async fn create_link(
     json: web::Json<Link>,
     db_pool: web::Data<Pool>,

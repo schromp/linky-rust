@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
 
 
     //Init tne db
-
+    //TODO change unwrap to handle errors and retry connecting
     if !std::env::var("NO_NEW_SETUP").is_ok() {
         let client = pool.get().await.unwrap();
         let stmt = include_str!("../sql/init_db.sql");
