@@ -3,10 +3,10 @@ import Alert from "./Alert";
 import Newlink from "./Newlink";
 import Axios from "axios";
 import { useState } from "react";
-import { isValidLink, isValidShortlink } from "../utilities/utils";
+import { hasHttp, isValidLink, isValidShortlink } from "../utilities/utils";
 
 //TODO change to .env
-const baseUrl = "http://127.0.0.1:8080/createLink";
+const baseUrl = "http://127.0.0.1:8080/";
 
 function Linkform() {
   const [shortlink, setShortlink] = useState("");
@@ -14,6 +14,8 @@ function Linkform() {
 
   const [slError, setSlError] = useState(false);
   const [llError, setLlError] = useState(false);
+  const [inputError, setInputError] = useState(false);
+  const [generalError, setGeneralError] = useState(false);
 
   const [gotLink, setGotLink] = useState(false);
 
@@ -25,7 +27,6 @@ function Linkform() {
       setSlError(true)
       setShortlink(null)
     }
-    setShortlink(event.target.value)
   }
 
   const handleLonglink = (event) => {
@@ -39,15 +40,39 @@ function Linkform() {
     }
   }
 
-  //TODO handle the response and implement visual feedback
   const createLink = () => {
+
     if (!llError && !slError) {
-      Axios.post(baseUrl, {
+      Axios.post(baseUrl + "createLink", {
         shortlink: shortlink,
-        longlink: longlink,
+        longlink: hasHttp(longlink) ? longlink : ("http://" + longlink),
       })
-        .then(function (response) { console.log(response) })
-        .catch(function (error) { console.log(error) })
+        .then(function (response) {
+          setGotLink(baseUrl + response.data.shortlink)
+        })
+        .catch(function (error) { 
+          if(error.response.status === 400) {
+            setInputError(true)
+          } else {
+            setGeneralError(true)
+          }
+         })
+    }
+  }
+
+  const reset = () => {
+    setGotLink(false)
+    setLlError(false)
+    setSlError(false)
+    setInputError(false)
+    setGeneralError(false)
+    setLonglink("")
+    setShortlink("")
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      createLink()
     }
   }
 
@@ -55,7 +80,7 @@ function Linkform() {
     return (
       <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
         <div className="card-body">
-          <div className="form-control">
+          <div className="form-control" onSubmit={createLink}>
             <label className="label">
               <span className="label-text">Your very long link</span>
             </label>
@@ -64,6 +89,7 @@ function Linkform() {
               placeholder="https://verylonglink.com/very/long/link"
               className="input input-bordered"
               onChange={handleLonglink}
+              onKeyDown={handleKeyDown}
             />
 
             <label className="label">
@@ -75,29 +101,29 @@ function Linkform() {
               <span>schro.it/</span>
               <input
                 type="text"
-                placeholder="short link"
+                placeholder="shortlink"
                 className="input input-bordered w-full"
                 onChange={handleShortlink}
+                onKeyDown={handleKeyDown}
               />
             </label>
-          </div>
 
-          <div>
-            {llError ? <Alert message="Please input a valid link" /> : <p />}
-            {slError ? <Alert message="You can only use charcters a-z and 0-1" /> : <p />}
-          </div>
+            <div>
+              {llError ? <Alert message="Please input a valid link" /> : <p />}
+              {slError ? <Alert message="You can only use charcters a-z and 0-1" /> : <p />}
+              {inputError ? <Alert message="Invalid Link" /> : <p />}
+              {generalError ? <Alert message="An error occured" /> : <p />}
+            </div>
 
-          <div className="form-control mt-6">
-            <button className="btn btn-primary" onClick={createLink}>
+            <button type="submit" className="btn btn-primary mt-4" onClick={createLink}>
               Generate
             </button>
           </div>
-          <Newlink created="hello" />
         </div>
       </div>
     );
   } else {
-    return <Newlink />
+    return <Newlink created={gotLink} statechange={reset} />
   }
 
 }

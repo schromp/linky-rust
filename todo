@@ -4,10 +4,6 @@ TODO:
 
 auto delete after 30 days, check every 24 hours -> Low priority
 
-move client into routes
-add functionality to ui -> methods
-check input and give feedback
-
 update docker compose to support everything
 DOCKER VOLUMES!
 env for the urls

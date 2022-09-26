@@ -9,7 +9,7 @@ services:
     ports:
       - 5430:5432
   # linky-server:
-  #   build: linky-rust
+  #   image: linky-rust
   #   ports:
   #     - 8080:8080
   #   environment:
