@@ -13,6 +13,7 @@ use actix_web::{web, App, HttpServer};
 use config_db::MyConfig;
 use dotenv::dotenv;
 use tokio_postgres::NoTls;
+use std::{thread, time};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -23,17 +24,38 @@ async fn main() -> std::io::Result<()> {
         .build()
         .unwrap();
 
+
     let config: MyConfig = config_.try_deserialize().unwrap();
+
 
     let pool = config.pg.create_pool(None, NoTls).unwrap();
 
-    //Init tne db
-    //TODO change unwrap to handle errors and retry connecting
-    if !std::env::var("NO_NEW_SETUP").is_ok() {
-        let client = pool.get().await.unwrap();
+    //get a client from the pool and try out a connection. if failes retry
 
-        let stmt = include_str!("../sql/init_db.sql");
-        client.batch_execute(&stmt).await.unwrap();
+    let mut retries = 5;
+    while retries > 0 {
+
+        let client = pool.get().await;
+        match client {
+            Ok(c) => {
+                println!("Database connection successfull");
+                retries = 0;
+
+                //if connected check for no new setup
+                if !std::env::var("NO_NEW_SETUP").is_ok() {
+            
+                    let stmt = include_str!("../sql/init_db.sql");
+                    c.batch_execute(&stmt).await.unwrap();
+                }
+            },
+            Err(e) => {
+                println!("Database connection error. Retrying in 5 seconds. {retries}/5");
+                eprintln!("{}", e);
+                thread::sleep(time::Duration::from_secs(5));
+                retries = retries - 1; 
+            }
+        };
+
     }
 
     let server = HttpServer::new(move || {

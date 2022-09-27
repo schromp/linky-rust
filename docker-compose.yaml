@@ -7,17 +7,16 @@ services:
       - POSTGRES_USER=actix
       - POSTGRES_DB=actix
     ports:
-      - 5430:5432
+      - 5432:5432
   # linky-server:
-  #   image: linky-rust
+  #   image: linky-server
   #   ports:
-  #     - 8080:8080
+  #     - 8081:8081
   #   environment:
-  #     - SERVER_ADDR=127.0.0.1:8080
+  #     - SERVER_ADDR=0.0.0.0:8081
   #     - PG.USER=actix
   #     - PG.PASSWORD=actix
-  #     - PG.HOST=127.0.0.1
-  #     - PG.PORT=5430
+  #     - PG.HOST=linky-db
   #     - PG.DBNAME=actix
   #     - PG.POOL.MAX_SIZE=16
   #   depends_on:
