@@ -7,7 +7,7 @@ services:
       - POSTGRES_USER=actix
       - POSTGRES_DB=actix
     ports:
-      - 5432:5432
+      - 5430:5432
   # linky-server:
   #   image: linky-server
   #   ports:

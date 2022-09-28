@@ -27,9 +27,8 @@ async fn main() -> std::io::Result<()> {
 
     let config: MyConfig = config_.try_deserialize().unwrap();
 
-
     let pool = config.pg.create_pool(None, NoTls).unwrap();
-
+    
     //get a client from the pool and try out a connection. if failes retry
 
     let mut retries = 5;
