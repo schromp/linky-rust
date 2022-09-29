@@ -42,7 +42,7 @@ pub async fn create_link(
 
 
     //only very basic handling. still accepts domains just not completely faulty ones
-    let _url = Url::parse(&link_info.longlink).map_err(|_| return MyError::InvalidLinkError)?;
+    let _url = Url::parse(&link_info.longlink).map_err(|_| MyError::InvalidLinkError)?;
 
     if link_info.shortlink.chars().count() > 16 || link_info.longlink.chars().count() > 10000 {
         return Err(MyError::InvalidLinkError.into()); 
@@ -57,8 +57,8 @@ pub async fn create_link(
     let new_link = db::create_link(&client, link_info).await;
 
     match new_link {
-        Ok(l) => return Ok(HttpResponse::Ok().json(l)),
-        Err(_) => return Err(Error::from(MyError::AlreadyExistsError)),
+        Ok(l) => Ok(HttpResponse::Ok().json(l)),
+        Err(_) => Err(Error::from(MyError::AlreadyExistsError)),
     }
 }
 

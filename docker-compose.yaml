@@ -8,16 +8,20 @@ services:
       - POSTGRES_DB=actix
     ports:
       - 5430:5432
-  # linky-server:
-  #   image: linky-server
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     - SERVER_ADDR=0.0.0.0:8081
-  #     - PG.USER=actix
-  #     - PG.PASSWORD=actix
-  #     - PG.HOST=linky-db
-  #     - PG.DBNAME=actix
-  #     - PG.POOL.MAX_SIZE=16
-  #   depends_on:
-  #     - linky-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  linky-server:
+    image: linky-server
+    ports:
+      - 9017:9017
+    environment:
+      - SERVER_ADDR=0.0.0.0:9017
+      - PG.USER=actix
+      - PG.PASSWORD=actix
+      - PG.HOST=linky-db
+      - PG.DBNAME=actix
+      - PG.POOL.MAX_SIZE=16
+    depends_on:
+      - linky-db
+volumes:
+  pgdata:

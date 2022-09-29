@@ -41,17 +41,17 @@ async fn main() -> std::io::Result<()> {
                 retries = 0;
 
                 //if connected check for no new setup
-                if !std::env::var("NO_NEW_SETUP").is_ok() {
+                if std::env::var("NO_NEW_SETUP").is_err() {
             
                     let stmt = include_str!("../sql/init_db.sql");
-                    c.batch_execute(&stmt).await.unwrap();
+                    c.batch_execute(stmt).await.unwrap();
                 }
             },
             Err(e) => {
                 println!("Database connection error. Retrying in 5 seconds. {retries}/5");
                 eprintln!("{}", e);
                 thread::sleep(time::Duration::from_secs(5));
-                retries = retries - 1; 
+                retries -= 1; 
             }
         };
 

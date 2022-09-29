@@ -10,7 +10,7 @@ pub async fn create_link(client: &Client, link_info: Link) -> Result<Link, MyErr
     let stmt = client.prepare(&_stmt).await.unwrap();
 
     //random string logic
-    if link_info.shortlink == "" {
+    if link_info.shortlink.is_empty() {
         let mut tested_shortstring = String::new();
         for _ in 1..10 {
             let s: String = rand::thread_rng()
@@ -38,7 +38,7 @@ pub async fn create_link(client: &Client, link_info: Link) -> Result<Link, MyErr
             .pop()
             .ok_or(MyError::NotFound);
 
-        return res;
+        res
     } else {
         client
             .query(&stmt, &[&link_info.shortlink, &link_info.longlink])
@@ -68,7 +68,7 @@ pub async fn get_all(client: &Client) -> Result<Vec<Link>, MyError> {
 
 pub async fn get_link(client: &Client, to_get: &str) -> Result<Link, MyError> {
     let _stmt = include_str!("../sql/get_link.sql");
-    let stmt = client.prepare(&_stmt).await.unwrap();
+    let stmt = client.prepare(_stmt).await.unwrap();
 
     client
         .query(&stmt, &[&to_get])
