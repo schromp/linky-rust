@@ -11,7 +11,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   linky-server:
-    image: linky-server
+    image: koziollek/linky-server
     ports:
       - 9017:9017
     environment:

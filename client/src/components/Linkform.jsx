@@ -6,7 +6,7 @@ import { useState } from "react";
 import { hasHttp, isValidLink, isValidShortlink } from "../utilities/utils";
 
 //TODO change to .env
-const baseUrl = "http://127.0.0.1:9017/";
+const baseUrl = "https://short.koziollek.com/";
 
 function Linkform() {
   const [shortlink, setShortlink] = useState("");

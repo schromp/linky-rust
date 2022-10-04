@@ -1,3 +1,5 @@
+This only works for my url at the moment because the program is compiled with my url hardcoded. TODO
+
 Docker compose to get image working
 ```
 services:
@@ -13,7 +15,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   linky-server:
-    image: koziollek/linky-server
+    image: koziollek/linky-rust
     ports:
       - 9017:9017
     environment:
